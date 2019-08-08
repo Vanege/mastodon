@@ -26,12 +26,16 @@ class AccountSearchService < BaseService
   end
 
   def resolving_non_matching_remote_account?
-    options[:resolve] && !exact_match && !domain_is_local?
+    offset.zero? && options[:resolve] && !exact_match && !domain_is_local?
   end
 
   def search_results_and_exact_match
+    return search_results.to_a unless offset.zero?
+
     exact = [exact_match]
+
     return exact if !exact[0].nil? && limit == 1
+
     exact + search_results.to_a
   end
 
